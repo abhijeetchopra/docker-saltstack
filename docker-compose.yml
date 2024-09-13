@@ -3,9 +3,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.master
+    image: salt-master
   salt-minion:
     build:
       context: .
       dockerfile: Dockerfile.minion
+    image: salt-minion
     depends_on:
       - salt-master
