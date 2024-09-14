@@ -24,4 +24,9 @@ RUN sed -i "s|#master: salt|master: salt-master|g" /etc/salt/minion
 # Configure Shell Prompt
 RUN echo "PS1='\[\033[01;32m\]\u@salt-minion\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /root/.bashrc
 
-ENTRYPOINT ["salt-minion", "-l", "debug"]
+# Add a script to set grains
+COPY minion-entrypoint.sh /minion-entrypoint.sh
+RUN chmod +x minion-entrypoint.sh
+
+# Run the script to set grains
+ENTRYPOINT ["/minion-entrypoint.sh"]

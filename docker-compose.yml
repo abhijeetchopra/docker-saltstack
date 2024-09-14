@@ -11,3 +11,6 @@ services:
     image: salt-minion
     depends_on:
       - salt-master
+    environment:
+      - ROLES=ninja turtle
+      - ENV=staging
