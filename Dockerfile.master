@@ -15,7 +15,7 @@ RUN echo "deb https://repo.saltproject.io/py3/ubuntu/20.04/arm64/latest focal ma
 # Update package list and install SaltStack packages
 RUN apt-get update -y
 RUN apt-get install salt-master salt-minion salt-ssh salt-syndic salt-cloud salt-api -y
-RUN apt-get install dnsutils tree -y
+RUN apt-get install dnsutils tree vim -y
 RUN apt-get clean all
 
 # Configure Salt Master
