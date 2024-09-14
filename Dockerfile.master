@@ -33,4 +33,13 @@ RUN sed -i '/#pillar_roots:/,+2 s/^#//' /etc/salt/master
 # Configure Shell Prompt
 RUN echo "PS1='\[\033[01;32m\]\u@salt-master\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /root/.bashrc
 
-ENTRYPOINT ["salt-master", "-l", "debug"]
+# Add supervisord configuration
+RUN apt-get install supervisor -y
+RUN apt-get clean all
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Expose Salt Master ports
+#EXPOSE 4505 4506
+
+# Start supervisord
+ENTRYPOINT ["/usr/bin/supervisord"]
