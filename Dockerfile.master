@@ -38,8 +38,5 @@ RUN apt-get install supervisor -y
 RUN apt-get clean all
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Expose Salt Master ports
-#EXPOSE 4505 4506
-
 # Start supervisord
 ENTRYPOINT ["/usr/bin/supervisord"]
