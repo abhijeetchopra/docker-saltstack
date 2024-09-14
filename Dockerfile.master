@@ -15,10 +15,20 @@ RUN echo "deb https://repo.saltproject.io/py3/ubuntu/20.04/arm64/latest focal ma
 # Update package list and install SaltStack packages
 RUN apt-get update -y
 RUN apt-get install salt-master salt-minion salt-ssh salt-syndic salt-cloud salt-api -y
+RUN apt-get install dnsutils tree -y
 RUN apt-get clean all
 
 # Configure Salt Master
 RUN sed -i "s|#auto_accept: False|auto_accept: True|g" /etc/salt/master
+
+# Configure Salt Master to it's own Minion
+RUN sed -i "s|#master: salt|master: salt-master|g" /etc/salt/minion
+
+# Uncomment file_roots block
+RUN sed -i '/#file_roots:/,+2 s/^#//' /etc/salt/master
+
+# Uncomment pillar_roots block
+RUN sed -i '/#pillar_roots:/,+2 s/^#//' /etc/salt/master
 
 # Configure Shell Prompt
 RUN echo "PS1='\[\033[01;32m\]\u@salt-master\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /root/.bashrc
