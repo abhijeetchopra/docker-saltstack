@@ -1,19 +1,32 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 MAINTAINER tim@cyface.com
 
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN apt-get update -y
 RUN apt-get install apt-utils wget gnupg -y
-RUN wget -q https://repo.saltstack.com/py3/ubuntu/18.04/amd64/latest/SALTSTACK-GPG-KEY.pub && \
+
+# Add SaltStack repository and GPG key
+RUN wget -q https://repo.saltproject.io/py3/ubuntu/20.04/arm64/latest/SALTSTACK-GPG-KEY.pub && \
     apt-key add SALTSTACK-GPG-KEY.pub && \
     rm SALTSTACK-GPG-KEY.pub
-RUN echo "deb http://repo.saltstack.com/py3/ubuntu/18.04/amd64/latest bionic main" > /etc/apt/sources.list.d/saltstack.list
-RUN apt-get update -y && \
-    apt-get install salt-minion salt-ssh -y && \
-    apt-get clean all
+RUN echo "deb https://repo.saltproject.io/py3/ubuntu/20.04/arm64/latest focal main" > /etc/apt/sources.list.d/saltstack.list
 
+# Update package list and install SaltStack packages
+RUN apt-get update -y
+RUN apt-get install salt-minion salt-ssh -y
+RUN apt-get install dnsutils tree vim -y
+RUN apt-get clean all
+
+# Configure Salt Master
 RUN sed -i "s|#master: salt|master: salt-master|g" /etc/salt/minion
 
-ENTRYPOINT ["salt-minion", "-l", "debug"]
+# Configure Shell Prompt
+RUN echo "PS1='\[\033[01;32m\]\u@salt-minion\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '" >> /root/.bashrc
 
+# Add a script to set grains
+COPY minion-entrypoint.sh /minion-entrypoint.sh
+RUN chmod +x minion-entrypoint.sh
+
+# Run the entrypoint script
+ENTRYPOINT ["/minion-entrypoint.sh"]
