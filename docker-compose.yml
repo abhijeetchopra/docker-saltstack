@@ -12,7 +12,7 @@ services:
     depends_on:
       - salt-master
     deploy:
-      replicas: 2
+      replicas: 0
     environment:
       - ROLES=ninja turtle
       - ENV=staging
