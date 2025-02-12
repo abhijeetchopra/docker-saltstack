@@ -1,5 +1,5 @@
 # In a default saltstack installation, this needs to go in /var/cache/salt/master/extmods/runners/
-# You invoke it with 
+# You invoke it with
 #  salt-run test_http.test
 # And it will do a quick http check against each minion to see what comes back
 from salt.utils import http
@@ -14,6 +14,6 @@ def test():
      result = http.query('http://{}'.format(minion), status=True)
      if result['status'] != 200:
         success = False
-     print("{}: {}".format(minion, result['body']))
+     body = result.get('body', 'No body in response')
+     print("{}: {}".format(minion, body))
   return success
-
