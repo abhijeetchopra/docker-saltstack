@@ -1,16 +1,21 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 MAINTAINER tim@cyface.com
 
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN apt-get update -y
-RUN apt-get install apt-utils wget gnupg -y
+RUN apt-get install apt-utils curl wget gnupg -y
 
-# Add SaltStack repository and GPG key
-RUN wget -q https://repo.saltproject.io/py3/ubuntu/20.04/arm64/latest/SALTSTACK-GPG-KEY.pub && \
-    apt-key add SALTSTACK-GPG-KEY.pub && \
-    rm SALTSTACK-GPG-KEY.pub
-RUN echo "deb https://repo.saltproject.io/py3/ubuntu/20.04/arm64/latest focal main" > /etc/apt/sources.list.d/saltstack.list
+### Add SaltStack repository and GPG key
+# Ensure keyrings dir exists
+RUN mkdir -p /etc/apt/keyrings
+# Download public key
+RUN curl -fsSL https://packages.broadcom.com/artifactory/api/security/keypair/SaltProjectKey/public | tee /etc/apt/keyrings/salt-archive-keyring.pgp
+# Create apt repo target configuration
+RUN curl -fsSL https://github.com/saltstack/salt-install-guide/releases/latest/download/salt.sources | tee /etc/apt/sources.list.d/salt.sources
+
+# Pin SaltStack packages to 3006.* version
+RUN printf 'Package: salt-*\nPin: version 3006.*\nPin-Priority: 1001\n' | tee /etc/apt/preferences.d/salt-pin-1001
 
 # Update package list and install SaltStack packages
 RUN apt-get update -y
