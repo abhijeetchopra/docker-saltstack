@@ -8,13 +8,13 @@ You will need a system with Docker and Docker Compose installed to use this proj
 
 Just run:
 
-`docker-compose up`
+`docker compose up`
 
 from a checkout of this directory, and the master and minion will start up with debug logging to the console.
 
 Then you can run (in a separate shell window):
 
-`docker-compose exec salt-master bash`
+`docker compose exec salt-master bash`
 
 and it will log you into the command line of the salt-master server.
 
@@ -32,7 +32,7 @@ The salt-master is set up to accept all minions that try to connect.  Since the 
 
 ## Running multiple minions
 
-`docker-compose up --scale salt-minion=2`
+`docker compose up --scale salt-minion=2`
 
 This will start up two minions instead of just one.
 
