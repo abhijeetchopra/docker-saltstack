@@ -1,4 +1,5 @@
 # docker-saltstack
+
 Docker Compose setup to spin up a salt master and minions.
 
 You can read a full article describing how to use this setup [here](https://medium.com/@timlwhite/the-simplest-way-to-learn-saltstack-cd9f5edbc967).
@@ -29,13 +30,14 @@ Note: you will see log messages like : "Could not determine init system from com
 
 The salt-master is set up to accept all minions that try to connect.  Since the network that the salt-master sees is only the docker-compose network, this means that only minions within this docker-compose service network will be able to connect (and not random other minions external to docker).
 
-#### Running multiple minions:
+## Running multiple minions
 
 `docker-compose up --scale salt-minion=2`
 
 This will start up two minions instead of just one.
 
-#### Host Names
+## Host Names
+
 The **hostnames** match the names of the containers - so the master is `salt-master` and the minion is `salt-minion`.
 
 If you are running more than one minion with `--scale=2`, you will need to use `docker-saltstack_salt-minion_1` and `docker-saltstack_salt-minion_2` for the minions if you want to target them individually.
